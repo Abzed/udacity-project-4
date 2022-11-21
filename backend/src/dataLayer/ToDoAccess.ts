@@ -12,7 +12,7 @@ export class ToDoAccess {
         private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
         private readonly s3Client: Types = new XAWS.S3({ signatureVersion: 'v4' }),
         private readonly todoTable = process.env.TODOS_TABLE,
-        private readonly s3BucketName = process.env.S3_BUCKET_NAME 
+        private readonly s3BucketName = process.env.ATTACHMENT_S3_BUCKET 
         ) {}
 // CREATING TODO
 async createToDo(todoItem: TodoItem): Promise<TodoItem> {
