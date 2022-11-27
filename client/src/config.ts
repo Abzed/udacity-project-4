@@ -1,7 +1,7 @@
-const apiId = 'yaclf8mkve'
-export const apiEndpoint = `https://${apiId}.execute-api.us-east-2.amazonaws.com/prod`
+const apiId = 'lz3wm1bn9j'
+export const apiEndpoint = `https://${apiId}.execute-api.us-east-2.amazonaws.com/dev`
 export const authConfig = {
-        domain: 'kkdevelopers.us.auth0.com',           // from Auth0 
-        clientId: 'P9GiMfMANzySg9uxvTjq9dVmw4Nw2j0L',  // from Auth0 
+        domain: 'dev-f0a8hvi0h406w0dt.us.auth0.com',
+        clientId: 'nb39dW7qBFXmKGsGPnAVnxvmPe0e2Pls',
         callbackUrl: 'http://localhost:3000/callback'
 }

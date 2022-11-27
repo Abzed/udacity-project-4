@@ -6,7 +6,7 @@ import Axios from 'axios'
 import { JwtPayload } from '../../auth/JwtPayload'
 const logger = createLogger('auth');
 // from AUTH0
-const jwksUrl = "https://kkdevelopers.us.auth0.com/.well-known/jwks.json";
+const jwksUrl = "https://dev-f0a8hvi0h406w0dt.us.auth0.com/.well-known/jwks.json";
 
 
 export const handler = async ( event: CustomAuthorizerEvent): Promise<CustomAuthorizerResult> => 
