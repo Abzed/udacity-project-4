@@ -8,6 +8,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-plugin-tracing
   - serverless-aws-documentation
+  - serverless-reqvalidator-plugin
 
 provider:
   name: aws
@@ -24,7 +25,7 @@ provider:
   environment:
     PROJECT_NAME: serverless-todo-app
     TODOS_TABLE: serverless-todo-app-${self:provider.stage}
-    S3_BUCKET_NAME: serverless-todo-app-${self:provider.stage}
+    S3_BUCKET_NAME: serverless-todo-app-abzed-${self:provider.stage}
 
 custom:
   documentation:
@@ -93,6 +94,7 @@ functions:
           method: post
           path: todos
           cors: true
+          reqValidatorName: RequestBodyValidator
           authorizer: Auth
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-create-todo-role-${self:provider.stage}
     iamRoleStatements:
@@ -113,6 +115,7 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
+          reqValidatorName: RequestBodyValidator
           authorizer: Auth
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-update-todo-role-${self:provider.stage}
     iamRoleStatements:
@@ -187,23 +190,23 @@ resources:
           Ref: ApiGatewayRestApi
         ValidateRequestBody: true
         ValidateRequestParameters: false
-    # AttachmentsBucket:
-    #   Type: AWS::S3::Bucket
-    #   Properties:
-    #     BucketName: ${self:provider.environment.S3_BUCKET_NAME}
-    #     CorsConfiguration:
-    #       CorsRules:
-    #         - AllowedOrigins:
-    #             - '*'
-    #           AllowedHeaders:
-    #             - '*'
-    #           AllowedMethods:
-    #             - GET
-    #             - PUT
-    #             - POST
-    #             - DELETE
-    #             - HEAD
-    #           MaxAge: 300
+    AttachmentsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET_NAME}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 300
 
     RequestBodyValidator:
       Type: AWS::ApiGateway::RequestValidator
@@ -236,16 +239,16 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi 
 
-    # BucketPolicy:
-    #   Type: AWS::S3::BucketPolicy
-    #   Properties:
-    #     PolicyDocument:
-    #       Id: MyPolicy
-    #       Version: '2012-10-17'
-    #       Statement:
-    #         - Sid: PublicReadForGetBucketObjects
-    #           Effect: Allow
-    #           Principal: '*'
-    #           Action: 's3:GetObject'
-    #           Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*'
-    #     Bucket: !Ref AttachmentsBucket
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: MyPolicy
+          Version: '2012-10-17'
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*'
+        Bucket: !Ref AttachmentsBucket

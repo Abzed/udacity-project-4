@@ -14,19 +14,24 @@ export async function getAllToDo(jwtToken: string): Promise<TodoItem[]> {
     return toDoAccess.getAllToDo(userId);
 }
 
-export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: string): Promise<TodoItem> {
+export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: string): Promise<TodoItem | string> {
     const userId = parseUserId(jwtToken);
     const todoId =  uuidv4();
-    const s3BucketName = process.env.ATTACHMENT_S3_BUCKET;
+    // const s3BucketName = process.env.S3_BUCKET_NAME;
+    // const s3BucketName = "serverless-todo-app-abzed-dev";
     
-    return toDoAccess.createToDo({
+    const validToDo = createTodoRequest.name.length > 2 && createTodoRequest.name.split(' ').length === 1 
+
+    console.log("Data", createTodoRequest)
+
+    return validToDo ?  toDoAccess.createToDo({
         userId: userId,
         todoId: todoId,
-        attachmentUrl:  `https://${s3BucketName}.s3.amazonaws.com/${todoId}`, 
+        attachmentUrl:  `https://serverless-todo-app-abzed-dev.s3.amazonaws.com/${todoId}`, 
         createdAt: new Date().getTime().toString(),
         done: false,
         ...createTodoRequest,
-    });
+    }) : new Promise<string>((_) => "Invalid request");
 }
 
 export function updateToDo(updateTodoRequest: UpdateTodoRequest, todoId: string, jwtToken: string): Promise<TodoUpdate> {
